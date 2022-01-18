@@ -76,3 +76,16 @@ void fw::EntityManager::removeComponent(ComponentID id, Entity e)
 	}
 	return;
 }
+
+fw::Signature fw::EntityManager::getSignature(Entity e)
+{
+	if(this->signatures.find(e) == this->signatures.end())
+	{
+		std::cerr << "ERROR: Failed to retrieve entity signature, entity not created! Exiting..." << std::endl;
+		exit(-1);
+	}
+	else
+	{
+		return this->signatures.at(e);
+	}
+}
