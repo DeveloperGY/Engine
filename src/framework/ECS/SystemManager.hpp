@@ -22,6 +22,11 @@ namespace fw
 				}
 			}
 
+			void clear()
+			{
+				this->entities.clear();
+			}
+
 			friend class SystemManager;
 
 		public:
@@ -92,6 +97,8 @@ namespace fw
 			void entityDestroyed(Entity e);
 
 			void entitySignatureChanged(Entity e, Signature s);
+
+			void clear();
 	};
 }
 

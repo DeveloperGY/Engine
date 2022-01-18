@@ -33,3 +33,11 @@ void fw::SystemManager::entitySignatureChanged(Entity e, Signature s)
 	}
 	return;
 }
+
+void fw::SystemManager::clear()
+{
+	for(auto& pair: this->systems)
+	{
+		pair.second->clear();
+	}
+}
