@@ -32,6 +32,7 @@ namespace fw
 	{
 		private:
 		std::unordered_map<std::string, std::shared_ptr<System>> systems;
+		std::unordered_map<std::string, fw::Signature> signatures;
 
 		public:
 			void init();
@@ -48,18 +49,49 @@ namespace fw
 				else
 				{
 					this->systems.insert({type, std::make_shared<T>});
+					Signature s;
+					this->signatures.insert({type, s});
 					return;
 				}
 				return;
 			}
 
-			void update()
+			template <typename T>
+			void setSignature(Signature s)
 			{
-				for(auto& pair: this->systems)
+				std::string type = typeid(T).name();
+				if(this->systems.find(type) == this->systems.end())
 				{
-					pair.second->update();
+					std::cerr << "WARNING: Failed to set system signature, system not registered!" << std::endl;
+					return;
+				}
+				else
+				{
+					this->signatures.at(type) = s;
+				}
+				return;
+			}
+
+			template <typename T>
+			Signature& getSignature()
+			{
+				std::string type = typeid(T).name();
+				if(this->systems.find(type) == this->systems.end())
+				{
+					std::cerr << "ERROR: Failed to retrieve system signature, system not registered! Exiting..." << std::endl;
+					exit(-1);
+				}
+				else
+				{
+					return this->signatures.at(type);
 				}
 			}
+
+			void update();
+
+			void entityDestroyed(Entity e);
+
+			void entitySignatureChanged(Entity e, Signature s);
 	};
 }
 
