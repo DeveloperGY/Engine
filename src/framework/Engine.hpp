@@ -2,6 +2,7 @@
 
 #include "Window.hpp"
 #include "ECS/ECS.hpp"
+#include "AssetManager.hpp"
 
 namespace fw
 {
@@ -10,6 +11,7 @@ namespace fw
 		private:
 			static fw::Window win;
 			static fw::SceneManager scene_man;
+			static fw::AssetManager asset_man;
 
 			static bool running;
 
