@@ -14,11 +14,11 @@ namespace fw
 		private:
 			std::set<Entity> entities;
 		
-			void update()
+			void update(float dt)
 			{
 				for(Entity e: this->entities)
 				{
-					this->run(e);
+					this->run(e, dt);
 				}
 			}
 
@@ -30,7 +30,7 @@ namespace fw
 			friend class SystemManager;
 
 		public:
-			virtual void run(Entity e) = 0;
+			virtual void run(Entity, float) = 0;
 	};
 
 	class SystemManager
@@ -92,7 +92,7 @@ namespace fw
 				}
 			}
 
-			void update();
+			void update(float);
 
 			void entityDestroyed(Entity e);
 

@@ -89,3 +89,8 @@ fw::Signature fw::EntityManager::getSignature(Entity e)
 		return this->signatures.at(e);
 	}
 }
+
+fw::DynamicSet<Entity, MAX_ENTITIES>& fw::EntityManager::getEntities()
+{
+	return this->entities;
+}

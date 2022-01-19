@@ -13,6 +13,14 @@ int main(void)
 		return -1;
 	}
 
+	fw::Engine::createScene("Main");
+
+	fw::Engine::setSceneLoad([](){
+		Entity e = fw::Engine::createEntity();
+	}, "Main");
+
+	fw::Engine::loadScene("Main");
+
 	fw::Engine::run();
 	return 0;
 }

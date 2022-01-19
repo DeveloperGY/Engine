@@ -24,5 +24,6 @@ namespace fw
 			void addComponent(fw::ComponentID, Entity);
 			void removeComponent(fw::ComponentID, Entity);
 			Signature getSignature(Entity);
+			fw::DynamicSet<Entity, MAX_ENTITIES>& getEntities();
 	};
 }

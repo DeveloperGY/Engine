@@ -1,12 +1,13 @@
 #include "Engine.hpp"
 
 fw::Window fw::Engine::win{};
+fw::SceneManager fw::Engine::scene_man{};
 bool fw::Engine::running = false;
 
 int fw::Engine::init(std::string p_title, unsigned int p_width, unsigned int p_height)
 {
 	win.init(p_width, p_height, p_title);
-
+	scene_man.init();
 
 
 	running = true;
@@ -15,11 +16,18 @@ int fw::Engine::init(std::string p_title, unsigned int p_width, unsigned int p_h
 
 void fw::Engine::run()
 {
+	sf::Clock clock;
+	clock.restart();
+	float dt;
+
 	while(running)
 	{
+		dt = clock.getElapsedTime().asSeconds();
+		clock.restart();
+		
 		win.clear();
 
-
+		scene_man.update(dt);
 
 		win.display();
 

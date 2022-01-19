@@ -5,11 +5,11 @@ void fw::SystemManager::init()
 	return;
 }
 
-void fw::SystemManager::update()
+void fw::SystemManager::update(float dt)
 {
 	for(auto& pair: this->systems)
 	{
-		pair.second->update();
+		pair.second->update(dt);
 	}
 }
 
@@ -29,6 +29,10 @@ void fw::SystemManager::entitySignatureChanged(Entity e, Signature s)
 		if(s != this->signatures.at(pair.first))
 		{
 			pair.second->entities.erase(e);
+		}
+		else
+		{
+			pair.second->entities.insert(e);
 		}
 	}
 	return;
