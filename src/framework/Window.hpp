@@ -18,7 +18,7 @@ namespace fw
 			bool shouldClose();
 			void pollEvents();
 			void close();
-			void draw();
+			void draw(sf::Drawable& d);
 			void clear();
 			void display();
 	};
