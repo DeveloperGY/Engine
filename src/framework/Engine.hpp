@@ -38,13 +38,13 @@ namespace fw
 			static void registerComponent() {scene_man.registerComponent<T>();}
 
 			template <typename T>
-			static void addComponent(Entity e) {scene_man.registerComponent<T>(e);}
+			static void addComponent(Entity e) {scene_man.addComponent<T>(e);}
 
 			template <typename T>
 			static void removeComponent(Entity e) {scene_man.removeComponent<T>(e);}
 
 			template <typename T>
-			static T& getComponent(Entity e) {scene_man.getComponent<T>(e);}
+			static T& getComponent(Entity e) {return scene_man.getComponent<T>(e);}
 
 			// Systems
 
