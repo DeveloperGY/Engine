@@ -53,7 +53,7 @@ namespace fw
 				}
 				else
 				{
-					this->systems.insert({type, std::make_shared<T>()});
+					this->systems.insert({type, std::make_shared<T>});
 					Signature s;
 					this->signatures.insert({type, s});
 					return;

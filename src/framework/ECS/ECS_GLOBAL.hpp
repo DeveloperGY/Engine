@@ -15,8 +15,6 @@
 #include <unordered_map>
 #include <memory>
 
-const std::size_t MAX_COMPS = MAX_COMPONENTS;
-
 namespace fw
 {
 	template <typename T>
@@ -24,7 +22,7 @@ namespace fw
 	
 	typedef unsigned int Entity;
 	typedef unsigned int ComponentID;
-	typedef std::bitset<MAX_COMPS> Signature;
+	typedef std::bitset<MAX_COMPONENTS> Signature;
 
 	template <typename T, std::size_t s_size>
 	class DynamicSet
@@ -97,26 +95,21 @@ namespace fw
 	class ComponentArray: public fw::IComponentArray
 	{
 		private:
-			std::array<std::shared_ptr<T>, MAX_ENTITIES> components;
-			std::unordered_map<Entity, std::size_t> eToI{};
-			std::unordered_map<std::size_t, Entity> iToE{};
+			std::array<T, MAX_ENTITIES> components;
+			std::unordered_map<Entity, std::size_t> eToI;
+			std::unordered_map<std::size_t, Entity> iToE;
 			std::size_t size{0};
 
 		public:
-			void insert(T& c, Entity e)
+			void insert(T c, Entity e)
 			{
-				if(this->eToI.bucket_count() == 0)
-				{
-					std::cout << "ERROR: Bucket Count Error" << std::endl;
-					return;
-				}
-				if((this->eToI.find(e) == this->eToI.end()) && (this->size < (MAX_COMPS-1))) // sigfpe from this->eToI.find(e)
+				if(this->eToI.find(e) == this->eToI.end() && this->size < MAX_COMPONENTS-1)
 				{
 					this->eToI.insert({e, this->size});
 					this->iToE.insert({this->size, e});
-					std::shared_ptr<T> ptr = std::make_shared<T>(c);
-					this->components.at(this->size) = ptr;
+					this->components.at(this->size) = c;
 					this->size++;
+					
 					return;
 				}
 				else
@@ -154,7 +147,7 @@ namespace fw
 			{
 				if(this->eToI.find(e) != this->eToI.end())
 				{
-					return *this->components.at(this->eToI.at(e));
+					return this->components.at(this->eToI.at(e));
 				}
 				else
 				{

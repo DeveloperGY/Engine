@@ -5,22 +5,20 @@ int fw::AssetManager::init()
 	return 1;
 }
 
-fw::sPtr<sf::Texture> fw::AssetManager::replaceTexture(unsigned int width, unsigned int height)
+sf::Texture& fw::AssetManager::replaceTexture(unsigned int width, unsigned int height)
 {
-	std::string aspect = std::to_string(width) + "x" + std::to_string(height);
-	
-	if(this->replacement_textures.find(aspect) != this->replacement_textures.end())
+	if(this->replacement_textures.find(sf::Vector2i(width, height)) != this->replacement_textures.end())
 	{
-		return this->replacement_textures.at(aspect);
+		return *this->replacement_textures.at(sf::Vector2i(width, height));
 	}
 	else
 	{
 		sf::Image img;
 		img.create(width, height);
 
-		for(unsigned int i = 0; i < height; i++)
+		for(unsigned int i; i < height; i++)
 		{
-			for(unsigned int j = 0; j < width; j++)
+			for(unsigned int j; j < width; j++)
 			{
 				if((i < height/2 && j < width/2) || (i > height/2 && j > height/2))
 				{
@@ -35,39 +33,22 @@ fw::sPtr<sf::Texture> fw::AssetManager::replaceTexture(unsigned int width, unsig
 
 		std::shared_ptr<sf::Texture> tex = std::make_shared<sf::Texture>();
 		tex->loadFromImage(img);
-		this->replacement_textures.insert({aspect, tex});
-		return tex;
+		this->replacement_textures.insert({sf::Vector2i(width, height), tex});
+		return *tex;
 	}	
 }
 
-void fw::AssetManager::addTexture(unsigned int width, unsigned int height, std::string key, std::string filepath)
+void fw::AssetManager::addTexture(std::string key, std::string filepath)
 {
 	if(this->textures.find(key) != this->textures.end())
 	{
 		std::cerr << "WARNING: Failed to add texture, texture with name already exists!" << std::endl;
 		return;
 	}
-
-	fw::sPtr<sf::Texture> tex = std::make_shared<sf::Texture>();
-	if(!tex->loadFromFile(filepath))
-	{
-		std::cerr << "WARNING: Failed to add texture, file not found." << std::endl;
-		tex = this->replaceTexture(width, height);
-	}
-
-	this->textures.insert({key, tex});
-	return;
-}
-
-sf::Texture& fw::AssetManager::getTexture(std::string key)
-{
-	if(this->textures.find(key) == this->textures.end())
-	{
-		std::cout << "ERROR: Failed to retrieve texture, texture not found! Exiting..." << std::endl;
-		exit(-1);
-	}
 	else
 	{
-		return *this->textures.at(key);
+		// problem: need width and height to make replacement texture but cant get dimensions if file not found
 	}
+	fw::sPtr<sf::Texture> tex = std::make_shared<sf::Texture>();
+
 }

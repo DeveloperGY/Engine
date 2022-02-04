@@ -6,10 +6,9 @@ void fw::Window::init(unsigned int p_width, unsigned int p_height, std::string p
 	return;
 }
 
-void fw::Window::draw(sf::Drawable& d)
+void fw::Window::draw()
 {
-	this->win.draw(d);
-	return;
+	//TODO: make draw method
 }
 
 bool fw::Window::shouldClose()

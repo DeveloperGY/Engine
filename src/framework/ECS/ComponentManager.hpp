@@ -56,9 +56,8 @@ namespace fw
 					}
 
 					ComponentID c = id++;
-					std::shared_ptr<ComponentArray<T>> ptr = std::make_shared<ComponentArray<T>>();
 					this->componentIDs.insert({type, c});
-					this->component_arrays.insert({type, ptr});
+					this->component_arrays.insert({type, std::make_shared<ComponentArray<T>>()});
 					return;
 				}
 			}
