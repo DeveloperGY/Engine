@@ -5,16 +5,13 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
+#include <set>
 #include <utility>
-#include <iostream>
 
 // TODO: Textures, Sound, Music
 
 namespace fw
 {
-	template <typename T>
-	using sPtr = std::shared_ptr<T>;
-
 	class AssetManager
 	{
 		private:
@@ -26,6 +23,6 @@ namespace fw
 		public:
 			int init();
 
-			void addTexture(std::string key, std::string filepath);
+			void addTexture(std::string filename, std::string key); // make this
 	};
 }

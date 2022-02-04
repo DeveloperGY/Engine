@@ -37,18 +37,3 @@ sf::Texture& fw::AssetManager::replaceTexture(unsigned int width, unsigned int h
 		return *tex;
 	}	
 }
-
-void fw::AssetManager::addTexture(std::string key, std::string filepath)
-{
-	if(this->textures.find(key) != this->textures.end())
-	{
-		std::cerr << "WARNING: Failed to add texture, texture with name already exists!" << std::endl;
-		return;
-	}
-	else
-	{
-		// problem: need width and height to make replacement texture but cant get dimensions if file not found
-	}
-	fw::sPtr<sf::Texture> tex = std::make_shared<sf::Texture>();
-
-}
