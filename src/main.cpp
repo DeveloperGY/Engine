@@ -1,32 +1,26 @@
 #define MAX_ENTITIES 10000
 
-#include "framework/Engine.hpp"
+#include "framework/Framework.hpp"
 
 #include <iostream>
 #include <string>
 
-struct Transform
-{
-	float x = 0;
-	float y = 0;
-};
-
 int main(void)
 {
-	if(!fw::Engine::init("My Game"))
-	{
-		std::cerr << "ERROR: Failed to initialize engine!" << std::endl;
+	if(!fw::init("My Game", 1440, 960))
 		return -1;
-	}
 
-	fw::Engine::registerComponent<Transform>();
+	fw::Engine::addTexture(100, 100, "test", "bin/test.png");
 
 	fw::Engine::createScene("Main");
 
 	fw::Engine::setSceneLoad([](){
 		Entity e = fw::Engine::createEntity();
 		fw::Engine::addComponent<Transform>(e);
-		fw::Engine::getComponent<Transform>(e).x = 5;
+		fw::Engine::getComponent<Transform>(e).x = 100;
+		fw::Engine::getComponent<Transform>(e).y = 100;
+		fw::Engine::addComponent<Sprite>(e);
+		fw::Engine::getComponent<Sprite>(e).texture = "test";
 	}, "Main");
 
 	fw::Engine::loadScene("Main");

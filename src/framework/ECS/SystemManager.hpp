@@ -14,6 +14,11 @@ namespace fw
 		private:
 			std::set<Entity> entities;
 		
+			/**
+			 * @brief Runs the system
+			 * 
+			 * @param dt 
+			 */
 			void update(float dt)
 			{
 				for(Entity e: this->entities)
@@ -22,6 +27,10 @@ namespace fw
 				}
 			}
 
+			/**
+			 * @brief Clears the entities in the system
+			 * 
+			 */
 			void clear()
 			{
 				this->entities.clear();
@@ -30,6 +39,11 @@ namespace fw
 			friend class SystemManager;
 
 		public:
+			
+			/**
+			 * @brief runs the system on a specific entity
+			 * 
+			 */
 			virtual void run(Entity, float) = 0;
 	};
 
@@ -40,8 +54,18 @@ namespace fw
 		std::unordered_map<std::string, fw::Signature> signatures;
 
 		public:
+
+			/**
+			 * @brief Initializes the system manager
+			 * 
+			 */
 			void init();
 
+			/**
+			 * @brief Registers a system for use
+			 * 
+			 * @tparam T 
+			 */
 			template <typename T>
 			void registerSystem()
 			{
@@ -53,7 +77,7 @@ namespace fw
 				}
 				else
 				{
-					this->systems.insert({type, std::make_shared<T>});
+					this->systems.insert({type, std::make_shared<T>()});
 					Signature s;
 					this->signatures.insert({type, s});
 					return;
@@ -61,6 +85,12 @@ namespace fw
 				return;
 			}
 
+			/**
+			 * @brief Set the signature of a system
+			 * 
+			 * @tparam T 
+			 * @param s 
+			 */
 			template <typename T>
 			void setSignature(Signature s)
 			{
@@ -77,6 +107,12 @@ namespace fw
 				return;
 			}
 
+			/**
+			 * @brief Retrieves the signature of a system
+			 * 
+			 * @tparam T 
+			 * @return Signature& 
+			 */
 			template <typename T>
 			Signature& getSignature()
 			{
@@ -92,10 +128,25 @@ namespace fw
 				}
 			}
 
+			/**
+			 * @brief runs all the systems
+			 * 
+			 */
 			void update(float);
 
+			/**
+			 * @brief Removes entity from systems
+			 * 
+			 * @param e 
+			 */
 			void entityDestroyed(Entity e);
 
+			/**
+			 * @brief Updates system entity sets according to the entity signature
+			 * 
+			 * @param e 
+			 * @param s 
+			 */
 			void entitySignatureChanged(Entity e, Signature s);
 
 			void clear();

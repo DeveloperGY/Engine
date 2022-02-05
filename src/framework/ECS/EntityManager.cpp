@@ -55,7 +55,7 @@ void fw::EntityManager::addComponent(ComponentID id, Entity e)
 {
 	if(this->entities.find(e) != this->entities.end())
 	{
-		this->signatures.at(e).set(id);
+		this->signatures.at(e).set(id, true);
 	}
 	else
 	{
@@ -68,7 +68,7 @@ void fw::EntityManager::removeComponent(ComponentID id, Entity e)
 {
 	if(this->entities.find(e) != this->entities.end())
 	{
-		this->signatures.at(e).reset(id);
+		this->signatures.at(e).set(id, false);
 	}
 	else
 	{

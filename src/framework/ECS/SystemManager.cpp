@@ -30,7 +30,7 @@ void fw::SystemManager::entitySignatureChanged(Entity e, Signature s)
 		{
 			pair.second->entities.erase(e);
 		}
-		else
+		else if(s == this->signatures.at(pair.first))
 		{
 			pair.second->entities.insert(e);
 		}

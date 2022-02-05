@@ -17,7 +17,14 @@ namespace fw
 		private:
 			std::unordered_map<std::string, fw::ComponentID> componentIDs;
 			std::unordered_map<std::string, sPtr<fw::IComponentArray>> component_arrays;
+			ComponentID currID{0};
 
+			/**
+			 * @brief Retrieves the specified component array
+			 * 
+			 * @tparam T 
+			 * @return sPtr<ComponentArray<T>> 
+			 */
 			template <typename T>
 			sPtr<ComponentArray<T>> getComponentArray()
 			{
@@ -34,8 +41,17 @@ namespace fw
 			}
 
 		public:
+			/**
+			 * @brief Initializes the component manager
+			 * 
+			 */
 			void init();
 
+			/**
+			 * @brief Registers a component for use
+			 * 
+			 * @tparam T 
+			 */
 			template <typename T>
 			void registerComponent()
 			{
@@ -47,21 +63,26 @@ namespace fw
 				}
 				else
 				{
-					static ComponentID id = 0;
-
-					if(id >= MAX_COMPONENTS-1)
+					if(this->currID >= MAX_COMPONENTS-1)
 					{
 						std::cerr << "WARNING: Failed to register component, max components reached!" << std::endl;
 						return;
 					}
 
-					ComponentID c = id++;
+					ComponentID c = currID;
 					this->componentIDs.insert({type, c});
 					this->component_arrays.insert({type, std::make_shared<ComponentArray<T>>()});
+					currID++;
 					return;
 				}
 			}
 
+			/**
+			 * @brief Retrieves the specified component id
+			 * 
+			 * @tparam T 
+			 * @return ComponentID 
+			 */
 			template <typename T>
 			ComponentID getComponentID()
 			{
@@ -77,6 +98,12 @@ namespace fw
 				}
 			}
 
+			/**
+			 * @brief Adds a component to an entity
+			 * 
+			 * @tparam T 
+			 * @param e 
+			 */
 			template <typename T>
 			void addComponent(Entity e)
 			{
@@ -94,6 +121,12 @@ namespace fw
 				}
 			}
 
+			/**
+			 * @brief Removes a component from an entity
+			 * 
+			 * @tparam T 
+			 * @param e 
+			 */
 			template <typename T>
 			void removeComponent(Entity e)
 			{
@@ -110,6 +143,13 @@ namespace fw
 				}
 			}
 
+			/**
+			 * @brief Retrives the specified entity's component
+			 * 
+			 * @tparam T 
+			 * @param e 
+			 * @return T& 
+			 */
 			template <typename T>
 			T& getComponent(Entity e)
 			{
@@ -125,6 +165,11 @@ namespace fw
 				}
 			}
 
+			/**
+			 * @brief Deletes all components attached to the specified entity
+			 * 
+			 * @param e 
+			 */
 			void entityDestroyed(Entity e)
 			{
 				for(auto& pair: this->component_arrays)
@@ -134,6 +179,10 @@ namespace fw
 				return;
 			}
 
+			/**
+			 * @brief Erases all components
+			 * 
+			 */
 			void clear()
 			{
 				for(auto& pair: this->component_arrays)

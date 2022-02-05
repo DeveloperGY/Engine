@@ -33,6 +33,11 @@ namespace fw
 			std::size_t max_size{s_size};
 		
 		public:
+			/**
+			 * @brief Inserts item into the set if there is space
+			 * 
+			 * @param item 
+			 */
 			void insert(T item)
 			{
 				if(this->size < max_size)
@@ -46,26 +51,52 @@ namespace fw
 				}
 			}
 
+			/**
+			 * @brief Returns iterator to first index in the set
+			 * 
+			 * @return auto 
+			 */
 			auto begin()
 			{
 				return this->arr.begin();
 			}
 
+			/**
+			 * @brief Returns iterator to the index after the last index of the set
+			 * 
+			 * @return auto 
+			 */
 			auto end()
 			{
 				return this->arr.end();
 			}
 
+			/**
+			 * @brief Returns an iterator to the specified item
+			 * 
+			 * @param item 
+			 * @return auto 
+			 */
 			auto find(T item)
 			{
 				return this->arr.find(item);
 			}
 
+			/**
+			 * @brief Returns true if the set is empty
+			 * 
+			 * @return true 
+			 * @return false 
+			 */
 			bool empty()
 			{
 				return !this->size;
 			}
 
+			/**
+			 * @brief Clears the set
+			 * 
+			 */
 			void clear()
 			{
 				this->arr.clear();
@@ -73,6 +104,11 @@ namespace fw
 				return;
 			}
 
+			/**
+			 * @brief Erases the specified item from the set
+			 * 
+			 * @param item 
+			 */
 			void erase(T item)
 			{
 				this->arr.erase(item);
@@ -86,8 +122,22 @@ namespace fw
 		private:
 
 		public:
+			/**
+			 * @brief Destroy the IComponentArray object
+			 * 
+			 */
 			virtual ~IComponentArray() = default;
+
+			/**
+			 * @brief Can't call this function
+			 * 
+			 */
 			virtual void entityDestroyed(Entity) = 0;
+
+			/**
+			 * @brief Can't call this function
+			 * 
+			 */
 			virtual void clear() = 0;
 	};
 
@@ -101,6 +151,12 @@ namespace fw
 			std::size_t size{0};
 
 		public:
+			/**
+			 * @brief Inserts a component into the component array
+			 * 
+			 * @param c 
+			 * @param e 
+			 */
 			void insert(T c, Entity e)
 			{
 				if(this->eToI.find(e) == this->eToI.end() && this->size < MAX_COMPONENTS-1)
@@ -119,6 +175,11 @@ namespace fw
 				}
 			}
 
+			/**
+			 * @brief Removes an entity's component from the component array
+			 * 
+			 * @param r_e 
+			 */
 			void remove(Entity r_e)
 			{
 				if(this->eToI.find(r_e) != this->eToI.end())
@@ -143,6 +204,12 @@ namespace fw
 				}
 			}
 			
+			/**
+			 * @brief Retrieves the component of the specified entity
+			 * 
+			 * @param e 
+			 * @return T& 
+			 */
 			T& getComponent(Entity e)
 			{
 				if(this->eToI.find(e) != this->eToI.end())
@@ -156,6 +223,11 @@ namespace fw
 				}
 			}
 
+			/**
+			 * @brief Removes the component of the specified entity from the component array if it exists
+			 * 
+			 * @param e 
+			 */
 			void entityDestroyed(Entity e) override
 			{
 				if(this->eToI.find(e) != this->eToI.end())
@@ -165,6 +237,10 @@ namespace fw
 				return;
 			}
 
+			/**
+			 * @brief Clears the component array
+			 * 
+			 */
 			void clear() override
 			{
 				this->eToI.clear();

@@ -1,6 +1,7 @@
 #include "Engine.hpp"
 
 fw::Window fw::Engine::win{};
+fw::AssetManager fw::Engine::asset_man{};
 fw::SceneManager fw::Engine::scene_man{};
 bool fw::Engine::running = false;
 
@@ -9,6 +10,10 @@ int fw::Engine::init(std::string p_title, unsigned int p_width, unsigned int p_h
 	win.init(p_width, p_height, p_title);
 	scene_man.init();
 
+	if(!asset_man.init())
+	{
+		return 0;
+	}
 
 	running = true;
 	return 1;
