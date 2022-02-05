@@ -2,6 +2,7 @@
 
 fw::Window fw::Engine::win{};
 fw::AssetManager fw::Engine::asset_man{};
+fw::InputManager fw::Engine::input_man{};
 fw::SceneManager fw::Engine::scene_man{};
 bool fw::Engine::running = false;
 
@@ -39,8 +40,7 @@ void fw::Engine::run()
 		win.pollEvents();
 		if(win.shouldClose())
 		{
-			win.close();
-			exit();
+			stop();
 		}
 	}
 	return;
@@ -50,4 +50,10 @@ void fw::Engine::exit()
 {
 	running = false;
 	return;
+}
+
+void fw::Engine::stop()
+{
+	win.close();
+	exit();
 }

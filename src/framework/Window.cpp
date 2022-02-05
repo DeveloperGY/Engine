@@ -22,9 +22,17 @@ void fw::Window::pollEvents()
 	sf::Event e;
 	while(this->win.pollEvent(e))
 	{
+		this->mouseScroll = 0;
 		if(e.type == sf::Event::Closed)
 		{
 			this->request_close = true;
+		}
+		else if(e.type == sf::Event::MouseWheelScrolled)
+		{
+			if(e.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+			{
+				this->mouseScroll = e.mouseWheelScroll.delta;
+			}
 		}
 	}
 	return;
@@ -46,4 +54,14 @@ void fw::Window::display()
 {
 	this->win.display();
 	return;
+}
+
+sf::Window& fw::Window::getWindow()
+{
+	return this->win;
+}
+
+float fw::Window::getScroll()
+{
+	return this->mouseScroll;
 }

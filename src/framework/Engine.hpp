@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Window.hpp"
+#include "InputManager.hpp"
 #include "AssetManager.hpp"
 #include "ECS/ECS.hpp"
 
@@ -11,9 +12,16 @@ namespace fw
 		private:
 			static fw::Window win;
 			static fw::AssetManager asset_man;
+			static fw::InputManager input_man;
 			static fw::SceneManager scene_man;
 
 			static bool running;
+
+			/**
+			 * @brief Exits the engine
+			 * 
+			 */
+			static void exit();
 
 		public:
 
@@ -34,11 +42,10 @@ namespace fw
 			static void run();
 
 			/**
-			 * @brief Exits the engine
+			 * @brief Stops the engine and closes the game
 			 * 
 			 */
-			static void exit();
-
+			static void stop();
 			// Window
 			
 			/**
@@ -47,6 +54,47 @@ namespace fw
 			 * @param sprite 
 			 */
 			static void draw(sf::Drawable& sprite) {win.draw(sprite);}
+			
+			// Input
+
+			/**
+			 * @brief Returns true if teh specified key is pressed
+			 * 
+			 * @param key 
+			 * @return true 
+			 * @return false 
+			 */
+			static bool isKeyPressed(fw::Key::Keys key) {return input_man.isKeyPressed(key);}
+			
+			/**
+			 * @brief Returns true if the specified button is pressed
+			 * 
+			 * @param button 
+			 * @return true 
+			 * @return false 
+			 */
+			static bool isButtonPressed(fw::MouseButton::MouseButtons button) {return input_man.isButtonPressed(button);}
+
+			/**
+			 * @brief Retrieves the x position of the mouse relative to the window
+			 * 
+			 * @return int 
+			 */
+			static int getMouseX() {return input_man.getMouseX(win.getWindow());}
+
+			/**
+			 * @brief Retieves the y position of the mouse relative to the window
+			 * 
+			 * @return int 
+			 */
+			static int getMouseY() {return input_man.getMouseY(win.getWindow());}
+
+			/**
+			 * @brief Retrives the amount of vertical scroll since the previous frame
+			 * 
+			 * @return float 
+			 */
+			static float getMouseScroll() {return win.getScroll();}
 			
 			// Scenes
 

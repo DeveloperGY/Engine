@@ -11,6 +11,7 @@ namespace fw
 		private:
 			sf::RenderWindow win;
 			bool request_close = false;
+			float mouseScroll{0};
 
 		public:
 
@@ -59,5 +60,19 @@ namespace fw
 			 * 
 			 */
 			void display();
+
+			/**
+			 * @brief Retrieves the sf::Window
+			 * 
+			 * @return sf::Window& 
+			 */
+			sf::Window& getWindow();
+
+			/**
+			 * @brief Retrieves the scroll amount since the previous frame
+			 * 
+			 * @return float 
+			 */
+			float getScroll();
 	};
 }

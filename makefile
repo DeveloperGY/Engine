@@ -11,4 +11,5 @@ debug:
 	g++ $(src) -o bin/debug $(flags) -g -fsanitize=address $(libs)
 
 run:
-	./bin/exe
+	cd bin ;\
+	./exe
