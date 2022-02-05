@@ -38,7 +38,7 @@ void fw::Window::close()
 
 void fw::Window::clear()
 {
-	this->win.clear();
+	this->win.clear(sf::Color(22, 22, 29));
 	return;
 }
 

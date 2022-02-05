@@ -209,13 +209,14 @@ namespace fw
 			 */
 			void run(fw::Entity entity, float dt) override
 			{
-				fw::Transform t = fw::Engine::getComponent<fw::Transform>(entity);
-				fw::Sprite s = fw::Engine::getComponent<fw::Sprite>(entity);
+				fw::Transform& t = fw::Engine::getComponent<fw::Transform>(entity);
+				fw::Sprite& s = fw::Engine::getComponent<fw::Sprite>(entity);
 
 				sf::Sprite sprite;
 				sprite.setPosition(t.x, t.y);
 				sprite.setTexture(fw::Engine::getTexture(s.texture));
 				fw::Engine::draw(sprite);
+
 				return;
 			}
 	};
