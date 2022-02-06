@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 #include <string>
 #include <unordered_map>
@@ -8,7 +9,7 @@
 #include <utility>
 #include <iostream>
 
-// TODO: Textures, Sound, Music
+// TODO: Sound, Music
 
 namespace fw
 {
@@ -20,6 +21,7 @@ namespace fw
 		private:
 			std::unordered_map<std::string, std::shared_ptr<sf::Texture>> textures;
 			std::unordered_map<std::string, std::shared_ptr<sf::Texture>> replacement_textures;
+			std::unordered_map<std::string, std::shared_ptr<sf::SoundBuffer>> sounds;
 
 			/**
 			 * @brief Creates a replacement texture
@@ -55,5 +57,21 @@ namespace fw
 			 * @return sf::Texture& 
 			 */
 			sf::Texture& getTexture(std::string key);
+
+			/**
+			 * @brief Adds a sound to the asset manager
+			 * 
+			 * @param key 
+			 * @param filepath 
+			 */
+			void addSound(std::string key, std::string filepath);
+
+			/**
+			 * @brief Gets a sound from the asset manager
+			 * 
+			 * @param key 
+			 * @return sf::SoundBuffer 
+			 */
+			sf::SoundBuffer& getSound(std::string key);
 	};
 }

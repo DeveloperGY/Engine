@@ -51,7 +51,7 @@ void fw::AssetManager::addTexture(unsigned int width, unsigned int height, std::
 	fw::sPtr<sf::Texture> tex = std::make_shared<sf::Texture>();
 	if(!tex->loadFromFile(filepath))
 	{
-		std::cerr << "WARNING: Failed to add texture, file not found." << std::endl;
+		std::cerr << "WARNING: Failed to add texture, file not found!" << std::endl;
 		tex = this->replaceTexture(width, height);
 	}
 
@@ -70,4 +70,32 @@ sf::Texture& fw::AssetManager::getTexture(std::string key)
 	{
 		return *this->textures.at(key);
 	}
+}
+
+void fw::AssetManager::addSound(std::string key, std::string filepath)
+{
+	if(this->sounds.find(key) != this->sounds.end())
+	{
+		std::cerr << "WARNING: Failed to add sound, sound with name already exists!" << std::endl;
+		return;
+	}
+
+	fw::sPtr<sf::SoundBuffer> sound = std::make_shared<sf::SoundBuffer>();
+	if(!sound->loadFromFile(filepath))
+	{
+		std::cerr << "ERROR: Failed to add sound, file not found! Exiting..." << std::endl;
+		exit(-1);
+	}
+	this->sounds.insert({key, sound});
+	return;
+}
+
+sf::SoundBuffer& fw::AssetManager::getSound(std::string key)
+{
+	if(this->sounds.find(key) == this->sounds.end())
+	{
+		std::cerr << "ERROR: Failed to retrieve sound, sound not found! Exiting..." << std::endl;
+		exit(-1);
+	}
+	return *this->sounds.at(key);
 }

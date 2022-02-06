@@ -26,11 +26,11 @@ void fw::SystemManager::entitySignatureChanged(Entity e, Signature s)
 {
 	for(auto& pair: this->systems)
 	{
-		if(s != this->signatures.at(pair.first))
+		if((s & this->signatures.at(pair.first)) != this->signatures.at(pair.first))
 		{
 			pair.second->entities.erase(e);
 		}
-		else if(s == this->signatures.at(pair.first))
+		else
 		{
 			pair.second->entities.insert(e);
 		}

@@ -221,6 +221,22 @@ namespace fw
 			 * @return sf::Texture& 
 			 */
 			static sf::Texture& getTexture(std::string key) {return asset_man.getTexture(key);}
+	
+			/**
+			 * @brief Adds a sound to the asset manager
+			 * 
+			 * @param key 
+			 * @param filepath 
+			 */
+			static void addSound(std::string key, std::string filepath) {asset_man.addSound(key, filepath);}
+
+			/**
+			 * @brief Retrieves a sound from the asset manager
+			 * 
+			 * @param key 
+			 * @return sf::SoundBuffer& 
+			 */
+			static sf::SoundBuffer& getSound(std::string key) {return asset_man.getSound(key);}
 	};
 }
 
@@ -241,6 +257,14 @@ namespace fw
 			std::string texture = "";
 	};
 
+	struct Sound
+	{
+		public:
+			bool shoudlPlay = false;
+			bool playing = false;
+			std::string sound = "";
+	};
+
 
 	//Systems
 	
@@ -249,6 +273,7 @@ namespace fw
 		private:
 
 		public:
+			
 			/**
 			 * @brief Renderes a sprite
 			 * 
@@ -268,8 +293,67 @@ namespace fw
 				return;
 			}
 	};
+
+	class SoundPlayer: public fw::System
+	{
+		private:
+			unsigned int numSounds = 0;
+			std::unordered_map<std::shared_ptr<sf::Sound>, float> sounds;
+			std::unordered_map<std::shared_ptr<sf::Sound>, Entity> entities;
+			std::set<std::shared_ptr<sf::Sound>> erasables;
+
+		public:
+			void run(fw::Entity entity, float dt) override
+			{
+				for(auto& pair: this->sounds)
+				{
+					pair.second += dt;
+
+					if(pair.second >= pair.first->getBuffer()->getDuration().asSeconds())
+					{
+						pair.first->stop();
+						this->erasables.insert(pair.first);
+					}
+				}
+
+				for(auto& pair: this->entities)
+				{
+					if(pair.first->getStatus() == sf::Music::Status::Stopped)
+					{
+						fw::Sound& s = fw::Engine::getComponent<Sound>(pair.second);
+						s.playing = false;
+					}
+				}
+
+				for(auto& s: this->erasables)
+				{
+					this->sounds.erase(s);
+					this->entities.erase(s);
+					this->numSounds--;
+				}
+				this->erasables.clear();
+
+				fw::Sound& sound = fw::Engine::getComponent<fw::Sound>(entity);
+
+				if(sound.shoudlPlay && (this->numSounds < 256))
+				{
+					std::shared_ptr<sf::Sound> ptr = std::make_shared<sf::Sound>();
+					this->sounds.insert({ptr, 0});
+					this->entities.insert({ptr, entity});
+					ptr->setBuffer(fw::Engine::getSound(sound.sound));
+					ptr->play();
+					sound.shoudlPlay = false;
+					sound.playing = true;
+					this->numSounds++;
+				}
+				return;
+			}
+	};
 }
 
 typedef fw::Transform Transform;
 typedef fw::Sprite Sprite;
+typedef fw::Sound Sound;
+
 typedef fw::Renderer Renderer;
+typedef fw::SoundPlayer SoundPlayer;

@@ -2,6 +2,7 @@
 
 #include <SFML/Window.hpp>
 #include <string>
+#include <iostream>
 
 namespace fw
 {
@@ -43,7 +44,8 @@ namespace fw
 	{
 		enum MouseButtons
 		{
-			Left, Right, Middle
+			Left, Right, Middle, XButton1,
+			XButton2, ButtonCount
 		};
 	};
 

@@ -22,10 +22,14 @@ namespace fw
 
 		fw::Engine::registerComponent<fw::Transform>();
 		fw::Engine::registerComponent<fw::Sprite>();
+		fw::Engine::registerComponent<fw::Sound>();
 
 		fw::Engine::registerSystem<fw::Renderer>();
 		fw::Engine::addSystemRequirement<Transform, fw::Renderer>();
 		fw::Engine::addSystemRequirement<Sprite, fw::Renderer>();
+
+		fw::Engine::registerSystem<fw::SoundPlayer>();
+		fw::Engine::addSystemRequirement<fw::Sound, fw::SoundPlayer>();
 
 		return 1;
 	}

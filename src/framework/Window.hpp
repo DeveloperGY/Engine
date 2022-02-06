@@ -74,5 +74,13 @@ namespace fw
 			 * @return float 
 			 */
 			float getScroll();
+
+			/**
+			 * @brief Returns true if the window has focus
+			 * 
+			 * @return true 
+			 * @return false 
+			 */
+			bool hasFocus();
 	};
 }

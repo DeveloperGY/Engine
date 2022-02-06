@@ -31,16 +31,19 @@ void fw::Engine::run()
 		dt = clock.getElapsedTime().asSeconds();
 		clock.restart();
 		
-		win.clear();
-
-		scene_man.update(dt);
-
-		win.display();
-
-		win.pollEvents();
-		if(win.shouldClose())
+		if(win.hasFocus()) // change when pausing is implemented
 		{
-			stop();
+			win.clear();
+
+			scene_man.update(dt);
+
+			win.display();
+
+			win.pollEvents();
+			if(win.shouldClose())
+			{
+				stop();
+			}
 		}
 	}
 	return;

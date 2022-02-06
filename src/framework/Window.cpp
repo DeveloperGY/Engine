@@ -65,3 +65,8 @@ float fw::Window::getScroll()
 {
 	return this->mouseScroll;
 }
+
+bool fw::Window::hasFocus()
+{
+	return this->win.hasFocus();
+}
