@@ -207,12 +207,12 @@ namespace fw
 			/**
 			 * @brief Adds a texture to the asset manager
 			 * 
-			 * @param width 
-			 * @param height 
+			 * @param frameWidth 
+			 * @param frameHeight 
 			 * @param key 
 			 * @param filepath 
 			 */
-			static void addTexture(unsigned int width, unsigned int height, std::string key, std::string filepath) {asset_man.addTexture(width, height, key, filepath);}
+			static void addTexture(unsigned int frameWidth, unsigned int frameHeight, std::string key, std::string filepath) {asset_man.addTexture(frameWidth, frameHeight, key, filepath);}
 			
 			/**
 			 * @brief Retrieves a texture from the asset manager
@@ -237,11 +237,51 @@ namespace fw
 			 * @return sf::SoundBuffer& 
 			 */
 			static sf::SoundBuffer& getSound(std::string key) {return asset_man.getSound(key);}
+
+			/**
+			 * @brief Adds a song filepath to the asset manager
+			 * 
+			 * @param key 
+			 * @param filepath 
+			 */
+			static void addMusic(std::string key, std::string filepath) {asset_man.addMusic(key, filepath);}
+			
+			/**
+			 * @brief Retrieves a music file filepath from the asset manager
+			 * 
+			 * @param key 
+			 * @return std::string 
+			 */
+			static std::string getMusic(std::string key) {return asset_man.getMusic(key);}
 	};
 }
 
 namespace fw
 {
+	// Structures
+
+	struct SpriteStructure
+	{
+		unsigned int frameCount = 1;
+		std::string name = "";
+		unsigned int srcIndex = 0;
+		float frameTime = 1;
+	};
+
+	struct SoundStructure
+	{
+		bool shoudlPlay = false;
+		bool playing = false;
+		std::string sound = "";
+	};
+
+	struct MusicStructure
+	{
+		bool shouldPlay = false;
+		bool playing = false;
+		std::string music = "";
+	};
+
 	// Components
 	
 	struct Transform
@@ -254,21 +294,115 @@ namespace fw
 	struct Sprite
 	{
 		public:
+			std::unordered_map<std::string, SpriteStructure> animations;
 			std::string texture = "";
+			std::string currentAnimation = "";
+			unsigned int frameWidth = 1;
+			unsigned int frameHeight = 1;
+			unsigned int currentFrame = 0;
+			float currentTime = 0;
+
+			/**
+			 * @brief Adds an animation to the sprite
+			 * 
+			 * @param name 
+			 * @param index 
+			 * @param framecount 
+			 * @param frametime 
+			 */
+			void addAnimation(std::string name, unsigned int index, unsigned int framecount = 1, float frametime = 1)
+			{
+				if(this->animations.find(name) != this->animations.end())
+				{
+					std::cerr << "WARNING: Failed to add animation, animation already exists!" << std::endl;
+					return;
+				}
+				fw::SpriteStructure animation;
+				animation.frameCount = framecount;
+				animation.frameTime = frametime;
+				animation.name = name;
+				animation.srcIndex = index;
+				this->animations.insert({name, animation});
+				return;
+			}
+
+			/**
+			 * @brief Sets the amimation of the sprite
+			 * 
+			 * @param name 
+			 */
+			void setAnimation(std::string name)
+			{
+				if(this->animations.find(name) == this->animations.end())
+				{
+					std::cerr << "WARNING: Failed to set animation, animation not found!" << std::endl;
+					return;
+				}
+				this->currentFrame = 0;
+				this->currentAnimation = name;
+				this->currentTime = 0;
+				return;
+			}
 	};
 
 	struct Sound
 	{
 		public:
-			bool shoudlPlay = false;
-			bool playing = false;
-			std::string sound = "";
+			std::unordered_map<std::string, SoundStructure> sounds;
+			unsigned int soundCount = 0;
+			
+			/**
+			 * @brief Adds a sound to the sound component
+			 * 
+			 * @param name 
+			 * @param soundKey 
+			 */
+			void addSound(std::string name, std::string soundKey)
+			{
+				if(this->sounds.find(name) != this->sounds.end())
+				{
+					std::cerr << "WARNING: Failed to add sound to sound component!" << std::endl;
+					return;
+				}
+				this->sounds.insert({name, (SoundStructure){false, false, soundKey}});
+				this->soundCount++;
+				return;
+			}
+	};
+
+	struct Music
+	{
+		public:
+			std::unordered_map<std::string, MusicStructure> songs;
+			unsigned int songCount = 0;
+			
+			/**
+			 * @brief Adds a song to the music component
+			 * 
+			 * @param name 
+			 * @param musicKey 
+			 */
+			void addMusic(std::string name, std::string musicKey)
+			{
+				if(this->songs.find(name) != this->songs.end())
+				{
+					std::cerr << "WARNING: Failed to add song to music component!" << std::endl;
+					return;
+				}
+				MusicStructure s;
+				s.music = musicKey;
+				s.playing = false;
+				s.shouldPlay = false;
+				this->songs.insert({name, s});
+				this->songCount++;
+				return;
+			}
 	};
 
 
 	//Systems
 	
-	class Renderer: public fw::System
+	class SpriteRenderer: public fw::System
 	{
 		private:
 
@@ -287,8 +421,18 @@ namespace fw
 
 				sf::Sprite sprite;
 				sprite.setPosition(t.x, t.y);
+				sprite.setTextureRect(sf::IntRect((s.currentFrame*s.frameWidth), (s.animations.at(s.currentAnimation).srcIndex*s.frameHeight), s.frameWidth, s.frameHeight));
 				sprite.setTexture(fw::Engine::getTexture(s.texture));
+				// Here 
 				fw::Engine::draw(sprite);
+
+				s.currentTime += dt;
+				if(s.currentTime >= s.animations.at(s.currentAnimation).frameTime)
+				{
+					s.currentFrame++;
+					s.currentFrame %= s.animations.at(s.currentAnimation).frameCount;
+					s.currentTime = 0;
+				}
 
 				return;
 			}
@@ -299,52 +443,125 @@ namespace fw
 		private:
 			unsigned int numSounds = 0;
 			std::unordered_map<std::shared_ptr<sf::Sound>, float> sounds;
-			std::unordered_map<std::shared_ptr<sf::Sound>, Entity> entities;
+			std::unordered_map<std::shared_ptr<sf::Sound>, SoundStructure*> soundStructs;
 			std::set<std::shared_ptr<sf::Sound>> erasables;
 
 		public:
-			void run(fw::Entity entity, float dt) override
+
+			void update(float dt) override
 			{
 				for(auto& pair: this->sounds)
 				{
 					pair.second += dt;
 
-					if(pair.second >= pair.first->getBuffer()->getDuration().asSeconds())
+					if(pair.second >= (pair.first->getBuffer()->getDuration().asSeconds()))
 					{
 						pair.first->stop();
 						this->erasables.insert(pair.first);
 					}
 				}
 
-				for(auto& pair: this->entities)
+				for(auto& pair: this->soundStructs)
 				{
-					if(pair.first->getStatus() == sf::Music::Status::Stopped)
+					if(this->erasables.find(pair.first) != this->erasables.end())
 					{
-						fw::Sound& s = fw::Engine::getComponent<Sound>(pair.second);
-						s.playing = false;
+						pair.second->playing = false;
 					}
 				}
 
 				for(auto& s: this->erasables)
 				{
 					this->sounds.erase(s);
-					this->entities.erase(s);
+					this->soundStructs.erase(s);
 					this->numSounds--;
 				}
 				this->erasables.clear();
+			}
 
-				fw::Sound& sound = fw::Engine::getComponent<fw::Sound>(entity);
-
-				if(sound.shoudlPlay && (this->numSounds < 256))
+			void run(fw::Entity entity, float dt) override
+			{
+				fw::Sound& soundComp = fw::Engine::getComponent<fw::Sound>(entity);
+				for(auto& pair: soundComp.sounds)
 				{
-					std::shared_ptr<sf::Sound> ptr = std::make_shared<sf::Sound>();
-					this->sounds.insert({ptr, 0});
-					this->entities.insert({ptr, entity});
-					ptr->setBuffer(fw::Engine::getSound(sound.sound));
-					ptr->play();
-					sound.shoudlPlay = false;
-					sound.playing = true;
-					this->numSounds++;
+					auto& sound = pair.second;
+					if(sound.shoudlPlay && (this->numSounds < 128))
+					{
+						std::shared_ptr<sf::Sound> ptr = std::make_shared<sf::Sound>();
+						this->sounds.insert({ptr, 0});
+						this->soundStructs.insert({ptr, &soundComp.sounds.at(pair.first)});
+						ptr->setBuffer(fw::Engine::getSound(sound.sound));
+						ptr->play();
+						sound.shoudlPlay = false;
+						sound.playing = true;
+						this->numSounds++;
+					}
+				}
+				return;
+			}
+	};
+
+	class MusicPlayer: public fw::System
+	{
+		private:
+		std::unordered_map<std::shared_ptr<sf::Music>, float> musicTimes;
+		std::unordered_map<std::shared_ptr<sf::Music>, MusicStructure*> musicStructs;
+		std::set<std::shared_ptr<sf::Music>> erasables;
+		unsigned int numMusic = 0;
+
+		public:
+			void update(float dt) override
+			{
+				for(auto& pair: this->musicTimes)
+				{
+					pair.second += dt;
+
+					if(pair.second >= (pair.first->getDuration().asSeconds()))
+					{
+						this->erasables.insert(pair.first);
+						pair.first->stop();
+					}
+				}
+
+				for(auto& pair: this->musicStructs)
+				{
+					if(this->erasables.find(pair.first) != this->erasables.end())
+					{
+						pair.second->playing = false;
+					}
+				}
+
+				for(auto& s: this->erasables)
+				{
+					this->musicTimes.erase(s);
+					this->musicStructs.erase(s);
+					this->numMusic--;
+				}
+				this->erasables.clear();
+				return;
+			}
+
+			void run(fw::Entity entity, float dt) override
+			{
+				fw::Music& musicComp = fw::Engine::getComponent<Music>(entity);
+				for(auto& pair: musicComp.songs)
+				{
+					auto& music = pair.second;
+					if(music.shouldPlay && (this->numMusic < 128))
+					{
+						std::shared_ptr<sf::Music> ptr = std::make_shared<sf::Music>();
+						if(!ptr->openFromFile(fw::Engine::getMusic(music.music)))
+						{
+							std::cerr << "WARNING: Music file not found!" << std::endl;
+							return;
+						}
+						this->musicTimes.insert({ptr, 0});
+						this->musicStructs.insert({ptr, &pair.second});
+						ptr->setVolume(25);
+						ptr->play();
+						pair.second.shouldPlay = false;
+						pair.second.playing = true;
+						this->numMusic++;
+					}
 				}
 				return;
 			}
@@ -354,6 +571,8 @@ namespace fw
 typedef fw::Transform Transform;
 typedef fw::Sprite Sprite;
 typedef fw::Sound Sound;
+typedef fw::Music Music;
 
-typedef fw::Renderer Renderer;
+typedef fw::SpriteRenderer SpriteRenderer;
 typedef fw::SoundPlayer SoundPlayer;
+typedef fw::MusicPlayer MusicPlayer;

@@ -99,3 +99,23 @@ sf::SoundBuffer& fw::AssetManager::getSound(std::string key)
 	}
 	return *this->sounds.at(key);
 }
+
+void fw::AssetManager::addMusic(std::string key, std::string filepath)
+{
+	if(this->songs.find(key) != this->songs.end())
+	{
+		std::cerr << "WARNING: Failed to add music, music with name already exists!" << std::endl;
+		return;
+	}
+	this->songs.insert({key, filepath});
+}
+
+std::string fw::AssetManager::getMusic(std::string key)
+{
+	if(this->songs.find(key) == this->songs.end())
+	{
+		std::cerr << "ERROR: Failed to retrieve music, music not found! Exiting..." << std::endl;
+		exit(-1);
+	}
+	return this->songs.at(key);
+}

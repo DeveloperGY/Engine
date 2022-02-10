@@ -23,13 +23,17 @@ namespace fw
 		fw::Engine::registerComponent<fw::Transform>();
 		fw::Engine::registerComponent<fw::Sprite>();
 		fw::Engine::registerComponent<fw::Sound>();
+		fw::Engine::registerComponent<fw::Music>();
 
-		fw::Engine::registerSystem<fw::Renderer>();
-		fw::Engine::addSystemRequirement<Transform, fw::Renderer>();
-		fw::Engine::addSystemRequirement<Sprite, fw::Renderer>();
+		fw::Engine::registerSystem<fw::SpriteRenderer>();
+		fw::Engine::addSystemRequirement<Transform, fw::SpriteRenderer>();
+		fw::Engine::addSystemRequirement<Sprite, fw::SpriteRenderer>();
 
 		fw::Engine::registerSystem<fw::SoundPlayer>();
 		fw::Engine::addSystemRequirement<fw::Sound, fw::SoundPlayer>();
+
+		fw::Engine::registerSystem<fw::MusicPlayer>();
+		fw::Engine::addSystemRequirement<fw::Music, fw::MusicPlayer>();
 
 		return 1;
 	}

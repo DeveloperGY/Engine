@@ -19,8 +19,9 @@ namespace fw
 			 * 
 			 * @param dt 
 			 */
-			void update(float dt)
+			void _update(float dt)
 			{
+				this->update(dt);
 				for(Entity e: this->entities)
 				{
 					this->run(e, dt);
@@ -41,10 +42,16 @@ namespace fw
 		public:
 			
 			/**
-			 * @brief runs the system on a specific entity
+			 * @brief Runs the system on a specific entity
 			 * 
 			 */
 			virtual void run(Entity, float) = 0;
+
+			/**
+			 * @brief Runs once per frame
+			 * 
+			 */
+			virtual void update(float) {};
 	};
 
 	class SystemManager

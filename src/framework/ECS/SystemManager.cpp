@@ -9,7 +9,7 @@ void fw::SystemManager::update(float dt)
 {
 	for(auto& pair: this->systems)
 	{
-		pair.second->update(dt);
+		pair.second->_update(dt);
 	}
 }
 

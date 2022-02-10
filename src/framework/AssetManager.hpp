@@ -22,6 +22,7 @@ namespace fw
 			std::unordered_map<std::string, std::shared_ptr<sf::Texture>> textures;
 			std::unordered_map<std::string, std::shared_ptr<sf::Texture>> replacement_textures;
 			std::unordered_map<std::string, std::shared_ptr<sf::SoundBuffer>> sounds;
+			std::unordered_map<std::string, std::string> songs;
 
 			/**
 			 * @brief Creates a replacement texture
@@ -73,5 +74,21 @@ namespace fw
 			 * @return sf::SoundBuffer 
 			 */
 			sf::SoundBuffer& getSound(std::string key);
+
+			/**
+			 * @brief Adds a music file filepath to the asset manager
+			 * 
+			 * @param key 
+			 * @param filepath 
+			 */
+			void addMusic(std::string key, std::string filepath);
+
+			/**
+			 * @brief Gets a music file filepath from the asset manager
+			 * 
+			 * @param key 
+			 * @return std::string 
+			 */
+			std::string getMusic(std::string key);
 	};
 }
